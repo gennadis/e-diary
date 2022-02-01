@@ -2,7 +2,16 @@ import random
 
 from datacenter.models import Lesson, Schoolkid, Mark, Chastisement, Subject
 
-ivan = Schoolkid.objects.get(full_name__contains="Фролов Иван")
+
+def get_schoolkid(full_name: str) -> Schoolkid:
+    try:
+        return Schoolkid.objects.get(full_name__contains=full_name)
+    except Schoolkid.DoesNotExist:
+        print("Schoolkid doesn't exist.")
+        return
+    except Schoolkid.MultipleObjectsReturned:
+        print(f"There are several schoolkids with name like {full_name}.")
+        return
 
 
 def fix_marks(schoolkid: Schoolkid) -> None:
@@ -13,20 +22,25 @@ def fix_marks(schoolkid: Schoolkid) -> None:
 
 
 def remove_chastisements(schoolkid: Schoolkid) -> None:
-    chastisements = Chastisement.objects.get(schoolkid=schoolkid)
-    chastisements.delete()
+    Chastisement.objects.get(schoolkid=schoolkid).delete()
 
 
 def create_commendation(schoolkid: Schoolkid, subject_title: str) -> None:
-    subject = Subject.objects.get(
-        title=subject_title, year_of_study=schoolkid.year_of_study
-    )
-    lessons = Lesson.objects.filter(
+    try:
+        subject = Subject.objects.get(
+            title=subject_title, year_of_study=schoolkid.year_of_study
+        )
+    except (Subject.DoesNotExist, Subject.MultipleObjectsReturned):
+        print(f"Please scecify subject title.")
+        return
+
+    subject_lessons = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
         group_letter=schoolkid.group_letter,
         subject=subject,
     )
-    random_lesson = random.choice(lessons)
+    random_lesson = random.choice(subject_lessons)
+
     chastisement_texts = [
         "Молодец!",
         "Отлично!",
@@ -34,7 +48,8 @@ def create_commendation(schoolkid: Schoolkid, subject_title: str) -> None:
         "Гораздо лучше, чем я ожидал!",
         "Ты меня приятно удивил!",
     ]
-    chastisement = Chastisement.objects.create(
+
+    Chastisement.objects.create(
         schoolkid=schoolkid,
         created=random_lesson.date,
         text=random.choice(chastisement_texts),
