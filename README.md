@@ -1,51 +1,49 @@
-# Электронный дневник школы
+# Student performance fixer
 
-Этот сайт - интерфейс для учеников школы. Здесь можно посмотреть оценки, расписание и прочую открытую информацию. Учителя заполняют базу данных через другой сайт. Ставят там оценки и т.д.
+This project is a collection of functions for fixing student's performance in E-Diary system.
 
-## Описание моделей
+## Features
+- Get Schoolkid object by it's full name
+- Fix marks that are less than 4 out of 5
+- Remove chastisements
+- Create commendation of random phrase for specified subject
 
-На сайте есть ученики: `Schoolkid`. Класс ученика определяется через комбинацию его полей `year_of_study` — год обучения и `group_letter` — литера класса. Вместе получается, например, 10А. Ученик связан со следующими моделями:
+## Setup
+1. Download `fix.py`
+```bash
+curl https://github.com/gennadis/e-diary/blob/master/fix.py  --output fix.py
+```
 
-- `Mark` — оценка на уроке, от 2 до 5.
-- `Commendation` — похвала от учителя, за особые достижения.
-- `Chastisement` — замечание от учителя, за особые проступки.
+2. Place it in a E-diary system folder, where the `manage.py` file is located
 
-Все 3 объекта связаны не только с учителем, который их создал, но и с учебным предметом (`Subject`). Примеры `Subject`:
+3. Open Django shell
+```bash
+python manage.py shell
+```
 
-- Математика 8 класса
-- Геометрия 11 класса
-- Русский язык 1 класса
-- Русский язык 4 класса
+4. Import `fix.py` in Django shell
+```bash
+import fix
+```                        
 
-`Subject` определяется не только названием, но и годом обучения, для которого учебный предмет проходит.
+## Examples
+1. To init, create a Schoolkid object
+```bash
+student = get_schoolkid('Your Name')
+```
 
-За расписание уроков отвечает модель `Lesson`. Каждый объект `Lesson` — урок в расписании. У урока есть комбинация `year_of_study` и `group_letter`, благодаря ей можно узнать для какого класса проходит этот урок. У урока есть `subject` и `teacher`, которые отвечают на вопросы "что за урок" и "кто ведёт". У урока есть `room` — номер кабинета, где он проходит. Урок проходит в дату `date`.
+2. To fix student's marks that are less than `4` points, use
+```bash
+fix_marks(student)
+```
 
-Расписание в школе строится по слотам:
+3. To remove student's chastisements, run
+```bash
+remove_chastisements(student)
+```
 
-- 8:00-8:40 — 1 урок
-- 8:50-9:30 — 2 урок
-- ...
 
-У каждого `Lesson` есть поле `timeslot`, которое объясняет, какой номер у этого урока в расписании.
-
-## Запуск
-
-- Скачайте код
-- Установите зависимости командой `pip install -r requirements.txt`
-- Создайте БД командой `python3 manage.py migrate`
-- Запустите сервер командой `python3 manage.py runserver`
-
-## Переменные окружения
-
-Часть настроек проекта берётся из переменных окружения. Чтобы их определить, создайте файл `.env` рядом с `manage.py` и запишите туда данные в таком формате: `ПЕРЕМЕННАЯ=значение`.
-
-Доступны 3 переменные:
-- `DEBUG` — дебаг-режим. Поставьте True, чтобы увидеть отладочную информацию в случае ошибки.
-- `SECRET_KEY` — секретный ключ проекта
-- `ALLOWED_HOSTS` — см [документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
-- `DATABASE_NAME` — путь до базы данных, например: `schoolbase.sqlite3`
-
-## Цели проекта
-
-Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org).
+4. To create a commendation of random phrase for specified subject, run
+```bash
+create_commendation(student, 'Subject Title')
+```
