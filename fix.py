@@ -1,9 +1,10 @@
 import random
+from typing import Optional
 
 from datacenter.models import Lesson, Schoolkid, Mark, Chastisement, Subject
 
 
-def get_schoolkid(full_name: str) -> Schoolkid:
+def get_schoolkid(full_name: str) -> Optional[Schoolkid]:
     try:
         return Schoolkid.objects.get(full_name__contains=full_name)
     except Schoolkid.DoesNotExist:
