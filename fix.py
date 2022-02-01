@@ -1,4 +1,4 @@
-import random
+from random import choice
 from typing import Optional
 
 from datacenter.models import Lesson, Schoolkid, Mark, Chastisement, Subject
@@ -40,9 +40,9 @@ def create_commendation(schoolkid: Schoolkid, subject_title: str) -> None:
         group_letter=schoolkid.group_letter,
         subject=subject,
     )
-    random_lesson = random.choice(subject_lessons)
+    random_lesson = choice(subject_lessons)
 
-    chastisement_texts = [
+    chastisement_phrases = [
         "Молодец!",
         "Отлично!",
         "Хорошо!",
@@ -53,7 +53,7 @@ def create_commendation(schoolkid: Schoolkid, subject_title: str) -> None:
     Chastisement.objects.create(
         schoolkid=schoolkid,
         created=random_lesson.date,
-        text=random.choice(chastisement_texts),
+        text=choice(chastisement_phrases),
         subject=random_lesson.subject,
         teacher=random_lesson.teacher,
     )
