@@ -35,12 +35,11 @@ def create_commendation(schoolkid: Schoolkid, subject_title: str) -> None:
         print(f"Please scecify subject title.")
         return
 
-    subject_lessons = Lesson.objects.filter(
+    lesson = Lesson.objects.filter(
         year_of_study=schoolkid.year_of_study,
         group_letter=schoolkid.group_letter,
         subject=subject,
-    )
-    random_lesson = choice(subject_lessons)
+    ).order_by('date').first()
 
     chastisement_phrases = [
         "Молодец!",
@@ -52,8 +51,8 @@ def create_commendation(schoolkid: Schoolkid, subject_title: str) -> None:
 
     Chastisement.objects.create(
         schoolkid=schoolkid,
-        created=random_lesson.date,
+        created=lesson.date,
         text=choice(chastisement_phrases),
-        subject=random_lesson.subject,
-        teacher=random_lesson.teacher,
+        subject=lesson.subject,
+        teacher=lesson.teacher,
     )
