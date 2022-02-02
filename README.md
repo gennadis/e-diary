@@ -22,28 +22,28 @@ python manage.py shell
 ```
 
 4. Import `fix.py` in Django shell
-```bash
+```python
 import fix
 ```                        
 
 ## Examples
 1. To init, create a Schoolkid object
-```bash
+```python
 student = get_schoolkid('Your Name')
 ```
 
 2. To fix student's marks that are less than `4` points, use
-```bash
+```python
 fix_marks(student)
 ```
 
 3. To remove student's chastisements, run
-```bash
+```python
 remove_chastisements(student)
 ```
 
 
 4. To create a commendation of random phrase for specified subject, run
-```bash
+```python
 create_commendation(student, 'Subject Title')
 ```
